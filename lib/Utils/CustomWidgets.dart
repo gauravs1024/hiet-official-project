@@ -172,16 +172,22 @@ class CustomWidgets{
            border: Border(bottom: BorderSide(color: Colors.grey))),
        child: TextFormField(
          controller: controller,
-         style: const TextStyle(color: Color(0xFF1A3037)),
+         style:  TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
          decoration: InputDecoration(
            border: OutlineInputBorder(),
            focusedBorder: OutlineInputBorder(
              borderSide: BorderSide(color: Color(0xFF5E757C), width: 2.0),
            ),
            labelText: label,
-           labelStyle: TextStyle(color: Color(0xFF4E4C39)),
+           labelStyle: TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
          ),
        ));
+ }
+
+
+ static buildSimpleText(String text){
+   return Text(text,style: TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold,fontSize: 16),);
+
  }
 
 

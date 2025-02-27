@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hiet_official_project/Pages/LoginPage.dart';
+import 'package:hiet_official_project/SessionManagement/SessionManagement.dart';
+import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
 import '../Utils/AppColors.dart';
 
 class AppDrawerMenuScreen extends StatefulWidget{
@@ -12,18 +14,21 @@ class _AppDrawerMenuScreenState extends State<AppDrawerMenuScreen>{
    Map<String, String?> userData={};
   // UserSharedPreferences pref=UserSharedPreferences();
 
+   getUserDetails()async{
+     UserSharedPreferences userSharedPreferences=UserSharedPreferences();
+     userData=await userSharedPreferences.loadUserData();
+     setState(() {
+
+     });
+     print(userData);
+   }
 
 
-  getUserData()async{
-    // userData= await pref.loadUserData();
-    setState(() {
 
-    });
-  }
 @override
   void initState() {
     super.initState();
-    getUserData();
+    getUserDetails();
   }
   @override
   Widget build(BuildContext context){
@@ -56,7 +61,7 @@ class _AppDrawerMenuScreenState extends State<AppDrawerMenuScreen>{
                     Container(
                       margin: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                       child:  Text(
-                        '+91${userData['phoneNumber']??'Not Available'}',
+                        '${userData['email']??'Not Available'}',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textColorWhite,
@@ -132,8 +137,9 @@ class _AppDrawerMenuScreenState extends State<AppDrawerMenuScreen>{
             title: const Text('Logout'),
             onTap: (){
               // pref.clearUserData();
-              // SessionManagement sessionManagement=SessionManagement();
-              // sessionManagement.clearSession();
+              UserSharedPreferences pref=UserSharedPreferences();
+              pref.clearUserData();
+
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginPage()));
             },),
 

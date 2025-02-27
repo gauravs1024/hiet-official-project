@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hiet_official_project/Pages/ViewQueryFormPage.dart';
 import 'package:http/http.dart' as http;
 import '../API/Api.dart';
+import '../Utils/AppColors.dart';
 import '../Utils/CustomWidgets.dart';
 
 class EditVisitorPage extends StatefulWidget{
@@ -117,6 +119,7 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
           CustomWidgets.showQuickAlert(responseMsg['message'],'success',context);
            // await Future.delayed(const Duration(seconds: 2));
            _isDispose=true;
+          handleEditFunction();
           // Navigator.push(context, MaterialPageRoute(builder: (_)=>const ViewQueryFormPage()));
         }
         else{
@@ -138,13 +141,29 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
     }
   }
 
+  void handleEditFunction()async{
+    await Future.delayed(Duration(seconds: 3));
+    if(context.mounted)
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>ViewQueryFormPage()));
+  }
+
+
+  void textValidation(){
+    if(nameController.text==''||phoneController.text==''||
+    contactPersonController.text==''||purposeController.text==''){
+      CustomWidgets.showQuickAlert('Please Fill All The Fields', 'error', context);
+    }
+    else{
+      editVisitor();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
       return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(21, 90, 105, 1),
-        title: Text(
+        backgroundColor: const Color.fromRGBO(21, 90, 105, 1),
+        title: const Text(
           'Edit Query Page',
           style: TextStyle(color: Colors.white),
         ),
@@ -166,16 +185,60 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
           SingleChildScrollView(
             child: Column(
               children: [
-                CustomWidgets.buildTextFormField('Visitor\'s name',nameController),
+                const SizedBox(height: 10,),
+                CustomWidgets.buildTextFormField('Visitor\'s name  *',nameController),
                 CustomWidgets.buildTextFormField('Email',emailController),
-                CustomWidgets.buildTextFormField('Phone Number',phoneController),
-                CustomWidgets.buildTextFormField('Alternate Phone Number ',altPhoneController),
-                CustomWidgets.buildTextFormField('Contact Person ',contactPersonController),
-                CustomWidgets.buildTextFormField('Purpose',purposeController),
+
+
+              Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.grey))),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10)
+                    ],
+                    controller: phoneController,
+                    style:  TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF5E757C), width: 2.0),
+                      ),
+                      labelText: 'Phone Number  *',
+                      labelStyle: TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
+                    ),
+                  )),
+
+                Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: const BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey))),
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(10)
+                      ],
+                      controller: altPhoneController,
+                      style:  TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF5E757C), width: 2.0),
+                        ),
+                        labelText: 'Alternate Phone Number',
+                        labelStyle: TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
+                      ),
+                    )),
+                CustomWidgets.buildTextFormField('Contact Person  *',contactPersonController),
+                CustomWidgets.buildTextFormField('Purpose  *',purposeController),
                 CustomWidgets.buildTextFormField('Visitor Address',addressController),
 
 
-                Divider(
+                const Divider(
                   height: 1,
                 ),
                 // Text("Program",
@@ -209,16 +272,16 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
                 //   ),
                 // ),
 
-                SizedBox(height: 10,),
-                Divider(
+                const SizedBox(height: 10,),
+                const Divider(
                   height: 1,
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   height: 30.0,
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(21, 90, 105, 1),
+                    color: const Color.fromRGBO(21, 90, 105, 1),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Material(
@@ -226,7 +289,7 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
                     child: InkWell(
                       onTap: (
                           ) {
-                        editVisitor();
+                        textValidation();
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: const Center(

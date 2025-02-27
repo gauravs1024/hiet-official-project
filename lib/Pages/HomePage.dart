@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'AdmQueryForm.dart';
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
        centerTitle: true,
        backgroundColor: Color.fromRGBO(21, 90, 105, 1),
        title: Text(
-         'Admission Query Page',
+         'Home Page',
          style: TextStyle(color: Colors.white),
        ),
      ),
@@ -80,6 +81,7 @@ class _HomePageState extends State<HomePage> {
                    ),
                    GestureDetector(
                      onTap: (){
+
                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>const ViewQueryFormPage()));
                      },
                      child: Column(
@@ -115,6 +117,17 @@ class _HomePageState extends State<HomePage> {
                //     effect: ExpandingDotsEffect(),  // your preferred effect
                //
                // )
+               Expanded(
+                 child: Align(
+                   alignment: Alignment.bottomRight,
+                   child: Container(
+                     height: 100,
+                     width: 100,
+                     alignment: Alignment.bottomRight,
+                     child: Lottie.asset('assets/animations/admission open anim.json'),
+                   ),
+                 ),
+               )
              ],
            ),
          ],

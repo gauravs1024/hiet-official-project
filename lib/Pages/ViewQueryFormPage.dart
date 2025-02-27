@@ -47,7 +47,7 @@ class _ViewQueryFormPageState extends State<ViewQueryFormPage> {
         }
       }
       else{
-        // showQuickAlert('Data Fetch Error', 'error');
+        CustomWidgets.showQuickAlert('Data Fetch Error', 'error',context);
 
       }
 
@@ -56,6 +56,7 @@ class _ViewQueryFormPageState extends State<ViewQueryFormPage> {
       print("catch is running  $e");
       // showQuickAlert('Some Exception Occurred $e','error');
       // showSuccesAlert("Some Exception Running");
+      CustomWidgets.showQuickAlert('Error', 'error',context);
     }
     setState(() {
       _isLoading=false;

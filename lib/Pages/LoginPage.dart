@@ -2,11 +2,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hiet_official_project/API/Api.dart';
 import 'package:hiet_official_project/Pages/HomePage.dart';
+import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
+import '../SessionManagement/SessionManagement.dart';
 import '../Utils/AppColors.dart';
+import '../Utils/CustomWidgets.dart';
 
 class LoginPage extends StatefulWidget{
   const LoginPage({super.key});
@@ -45,7 +49,24 @@ class _LoginPageState extends State<LoginPage>{
 
   }
 
+  void clearFields(){
+    emailPhoneController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+    nameController.clear();
+  }
+
+
+  Future<void> saveSession(String name,String userId,String userRole,String email,String isLoggedIn) async {
+    // FlutterSecureStorage secureStorage=const FlutterSecureStorage();
+    // SessionManagement sessionManagement=SessionManagement();
+    // await sessionManagement.saveSession(name, userId, userRole, isLoggedIn);
+
+    UserSharedPreferences userSharedPreferences=UserSharedPreferences();
+    await userSharedPreferences.saveUserData(name, userId, userRole, email, isLoggedIn);
+  }
 Future<void>userLogin() async{
+
   setState(() {
     _isLoading = true;
   });
@@ -59,25 +80,27 @@ Future<void>userLogin() async{
       },
     );
     final response= await Future.any([loginRequest,Future.delayed(timeoutDuration)]);
-
+    SessionManagement sessionManagement = SessionManagement();
       if (response.statusCode == 200) {
         var responseMsg = json.decode(response.body);
         print(responseMsg);
         if(responseMsg['status']==true){
           print(responseMsg['message']);
-          emailPhoneController.clear();
-          passwordController.clear();
+        await  saveSession(responseMsg['data']['name'],responseMsg['data']['id'].toString(),responseMsg['data']['role'],
+              responseMsg['data']['email'],(DateTime.now()).toString());
+          clearFields();
           Navigator.push(context,MaterialPageRoute(builder: (_)=>const HomePage()));
         }
         else{
           _isLoading=false;
-          print(responseMsg['message']);
+          CustomWidgets.showQuickAlert(responseMsg['message'],'error' , context);
         }
       }
 
   }
   catch(e){
   print('Exception thrown    $e');
+  CustomWidgets.showQuickAlert('Server Error','error' , context);
   _isLoading=false;
   }
   finally{
@@ -87,27 +110,19 @@ Future<void>userLogin() async{
   });
   }
 }
+    void inputTextValidation(){
+    if(emailPhoneController.text==''){
+      CustomWidgets.showQuickAlert('Please fill all the fields','error' , context);
+    }
+    else if(passwordController.text==''){
+      CustomWidgets.showQuickAlert('Please fill all the fields','error' , context);
+    }
+    else{
+      userLogin();
+    }
+    }
 
 
-  Widget buildTextFormField(String label,TextEditingController controller){
-   return Container(
-        padding: const EdgeInsets.all(8.0),
-    decoration: const BoxDecoration(
-    border: Border(bottom: BorderSide(color: Colors.grey))
-    ),
-    child:TextFormField(
-    controller: controller,
-    style: const TextStyle(color:Color(0xFF1A3037)),
-    decoration: InputDecoration(
-    border: OutlineInputBorder(),
-    focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: AppColors.borderColor,width: 2.0),),
-    labelText: label,
-    labelStyle: TextStyle(color: AppColors.primaryTextColor),
-    ),
-    )
-    );
-  }
 
   Widget buildLoginCard(){
     return Card(
@@ -138,7 +153,7 @@ Future<void>userLogin() async{
             ),
 
 
-           buildTextFormField('Email or Phone number',emailPhoneController),
+           CustomWidgets.buildTextFormField('Email or Phone number',emailPhoneController),
 
 
             Container(
@@ -149,13 +164,13 @@ Future<void>userLogin() async{
               child: TextFormField(
                 controller: passwordController,
                   obscureText: _isObscured,
-                  style:  TextStyle(color:AppColors.borderColor),
+                  style:  TextStyle(color:AppColors.primaryTextColor,fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: AppColors.borderColor,width: 2.0),),
                       labelText: 'Password ',
-                      labelStyle:  TextStyle(color: AppColors.primaryTextColor),
+                      labelStyle:  TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
                       suffixIcon: IconButton( icon:
                       Icon(_isObscured ?Icons.visibility:Icons.visibility_off,),
                         onPressed: _togglePasswordVisibilty,
@@ -176,7 +191,7 @@ Future<void>userLogin() async{
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    userLogin();
+                    inputTextValidation();
                   },
                   borderRadius: BorderRadius.circular(8),
                   child: const Center(
@@ -201,6 +216,7 @@ Future<void>userLogin() async{
                  ),
                  TextButton(onPressed: (){
                    isLoginPage=false;
+                   clearFields();
                    setState(() {
 
                    });
@@ -244,8 +260,8 @@ Future<void>userLogin() async{
               ) ,
             ),
 
-          buildTextFormField('Name',nameController),
-            buildTextFormField('Email or Phone number',emailPhoneController),
+            CustomWidgets.buildTextFormField('Name',nameController),
+            CustomWidgets.buildTextFormField('Email or Phone number',emailPhoneController),
 
 
             Container(
@@ -255,13 +271,14 @@ Future<void>userLogin() async{
               ),
               child: TextFormField(
                   obscureText: _isObscured,
-                  style:  TextStyle(color:AppColors.borderColor),
+                  style:  TextStyle(color:AppColors.borderColor,fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: AppColors.borderColor,width: 2.0),),
                       labelText: 'Password ',
-                      labelStyle:  TextStyle(color: AppColors.primaryTextColor),
+                      labelStyle:  TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
+
                       suffixIcon: IconButton( icon:
                       Icon(_isObscured ?Icons.visibility:Icons.visibility_off,),
                         onPressed: _togglePasswordVisibilty,
@@ -278,13 +295,13 @@ Future<void>userLogin() async{
               child: TextFormField(
                 controller: confirmPasswordController,
                   obscureText: _isObscured,
-                  style:  TextStyle(color: AppColors.borderColor),
+                  style:  TextStyle(color: AppColors.borderColor,fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: AppColors.borderColor,width: 2.0),),
                       labelText: 'Confirm Password ',
-                      labelStyle: TextStyle(color: AppColors.primaryTextColor),
+                      labelStyle: TextStyle(color: AppColors.primaryTextColor,fontWeight: FontWeight.bold),
                       suffixIcon: IconButton( icon:
                       Icon(_isObscured ?Icons.visibility:Icons.visibility_off,),
                         onPressed: _togglePasswordVisibilty,
@@ -323,6 +340,7 @@ Future<void>userLogin() async{
             ),
             TextButton(onPressed: (){
               isLoginPage=true;
+              clearFields();
               setState(() {
 
               });

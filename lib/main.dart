@@ -3,10 +3,25 @@ import 'package:hiet_official_project/Pages/HomePage.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hiet_official_project/Pages/LoginPage.dart';
+import 'package:hiet_official_project/SessionManagement/SessionManagement.dart';
+import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
+bool loggedInFlag=false;
+Future<void> main() async {
   // HttpOverrides.global = MyHttpOverrides(); // Bypass SSL
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+
+    Map<String,String?> sessionData;
+  UserSharedPreferences userSharedPreferences=UserSharedPreferences();
+  sessionData=await userSharedPreferences.loadUserData();
+  print('session $sessionData');
+
+  if(sessionData['isLoggedIn']!=null){
+    loggedInFlag=true;
+  }
   runApp(const MyApp());
 }
 
@@ -19,7 +34,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Login Page',
-      home:LoginPage(),
+      home:loggedInFlag?HomePage():LoginPage(),
     );
   }
 }
