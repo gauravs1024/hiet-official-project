@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hiet_official_project/Pages/LoginPage.dart';
-import 'package:hiet_official_project/SessionManagement/SessionManagement.dart';
 import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
 import '../Utils/AppColors.dart';
 

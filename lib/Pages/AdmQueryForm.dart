@@ -46,6 +46,9 @@ class _AdmissionQueryPageState extends State<AdmissionQueryPage> {
     contactPersonController.text==''||_selectedPurpose==null){
       CustomWidgets.showQuickAlert('Fill All the Necessary Fields (*)', 'error', context);
     }
+    else if(phoneController.text.length<10||altPhoneController.text.length<10){
+      CustomWidgets.showQuickAlert('Phone Number must be 10 digits', 'error', context);
+    }
     else{
       addVisitor();
     }
@@ -242,34 +245,7 @@ class _AdmissionQueryPageState extends State<AdmissionQueryPage> {
                   height: 1,
                 ),
                 SizedBox(height: 10,),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: 30.0,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(21, 90, 105, 1),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (
-                          ) {
-                      inputTextValidation();
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: const Center(
-                        child: Text(
-                          'Submit',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                CustomWidgets.customButton('Submit',inputTextValidation)
               ],
             ),
           ),

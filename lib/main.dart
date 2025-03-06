@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hiet_official_project/Pages/HomePage.dart';
-import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:hiet_official_project/Pages/LoginPage.dart';
-import 'package:hiet_official_project/SessionManagement/SessionManagement.dart';
 import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
-import 'package:http/http.dart' as http;
 
 bool loggedInFlag=false;
 Future<void> main() async {

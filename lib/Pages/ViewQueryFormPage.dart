@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:hiet_official_project/Utils/CustomWidgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class ViewQueryFormPage extends StatefulWidget{
   const ViewQueryFormPage({super.key});
 
@@ -20,6 +22,50 @@ class _ViewQueryFormPageState extends State<ViewQueryFormPage> {
   bool _isLoading=false;
   Map<String,dynamic>visitorData={};
   List<dynamic>visitorDataList=[];
+  final int _pageSize = 10;
+  int _currentPage = 0;
+  List<dynamic> _currentPageData = [];
+  final _pageController=PageController();
+  int totalPages=1;
+
+  void _loadPage() {
+    int startIndex = _currentPage * _pageSize;
+    int endIndex = startIndex + _pageSize;
+    totalPages = (visitorDataList.length / _pageSize).ceil();
+    if (startIndex < visitorDataList.length) {
+      _currentPageData = visitorDataList.sublist(
+        startIndex,
+        endIndex > visitorDataList.length ? visitorDataList.length : endIndex,
+      );
+    } else {
+      _currentPageData = [];
+    }
+
+    setState(() {});
+  }
+
+  // Function to go to the next page
+  void _nextPage() {
+    if ((_currentPage + 1) * _pageSize < visitorDataList.length) {
+      _currentPage++;
+      setState(() {
+
+      });
+      _loadPage();
+
+    }
+  }
+  // Function to go to the previous page
+  void _previousPage() {
+    if (_currentPage > 0) {
+      _currentPage--;
+      setState(() {
+
+      });
+      _loadPage();
+
+    }
+  }
 
   Future getVisitorList() async{
 
@@ -43,6 +89,7 @@ class _ViewQueryFormPageState extends State<ViewQueryFormPage> {
             visitorData = jsonDecode(response.body);
             print(visitorData);
             visitorDataList=visitorData['data'];
+            _loadPage();
           });
         }
       }
@@ -68,6 +115,7 @@ class _ViewQueryFormPageState extends State<ViewQueryFormPage> {
     // TODO: implement initState
     super.initState();
     getVisitorList();
+
   }
 
 
@@ -77,45 +125,89 @@ class _ViewQueryFormPageState extends State<ViewQueryFormPage> {
      appBar: CustomWidgets.customAppBAr('Query Forms'),
      body: Stack(
        children: [
-         Padding(
-           padding: const EdgeInsets.all(8.0),
-           child: Scrollbar(
-             thumbVisibility: true,
-             child: ListView.builder(itemCount:visitorDataList.length ,
-                 itemBuilder:(context,index){
-                  return  CustomWidgets.customVisitorCard(
-                      visitorDataList[index]['name'],visitorDataList[index]['email'],visitorDataList[index]['purpose'],
-                      visitorDataList[index]['phone'].toString(),visitorDataList[index]['alternate_phone'].toString(),
-                      visitorDataList[index]['contact_person'],visitorDataList[index]['address'],
-                      visitorDataList[index]['current_date'],(){
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (_)=>EditVisitorPage(
-                                visitorName: visitorDataList[index]['name'].toString(),
-                                email:visitorDataList[index]['email'].toString() ,
-                                phone: visitorDataList[index]['phone'].toString(),
-                                altPhone:visitorDataList[index]['alternate_phone'].toString() ,
-                                contactPerson:visitorDataList[index]['contact_person'].toString(),
-                                address: visitorDataList[index]['address'].toString(),
-                                id: visitorDataList[index]['id'].toString(), purpose:visitorDataList[index]['purpose'].toString() )));
-                  });
-
-                }),
-           ),
-         ),
          if(_isLoading)
            Container(
-             height: 700,
-             width: 500,
+             height: double.infinity,
+             width: double.infinity,
              color: Colors.blue.withOpacity(0.2),
              child: Center(
                // child: CircularProgressIndicator(
                //   color: AppColors.primaryColor,
                // ),
                child: Lottie.asset('assets/animations/Loader.json',
-                  width: 150,
-                  height: 150),
+                   width: 150,
+                   height: 150),
              ),
            ),
+         Column(
+           children: [
+             Row(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                 ElevatedButton(
+                   onPressed: _previousPage,
+                   style:  ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll<Color>(AppColors.primaryColor),
+                        ),
+                   child: Text('Previous',style: TextStyle(color: AppColors.textColorWhite),),
+                 ),
+                 SizedBox(width: 20),
+                 ElevatedButton(
+                   style:  ButtonStyle(
+                 backgroundColor: WidgetStatePropertyAll<Color>(AppColors.primaryColor),
+                          ),
+                   onPressed: _nextPage,
+                   child: Text('   Next  ',style: TextStyle(color: AppColors.textColorWhite),),
+                 ),
+               ],
+             ),
+
+             AnimatedSmoothIndicator(
+               activeIndex:_currentPage ,
+               count: totalPages,
+               effect: SlideEffect(
+                   // spacing:  8.0,
+                   // radius:  4.0,
+                   // dotWidth:  24.0,
+                   // dotHeight:  16.0,
+                   // paintStyle:  PaintingStyle.stroke,
+                   // strokeWidth:  1.5,
+                   // dotColor:  Colors.grey,
+                   activeDotColor: AppColors.primaryColor
+               ),
+             ),
+
+             Expanded(
+               child: Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Scrollbar(
+                   thumbVisibility: true,
+                   child: ListView.builder(itemCount:_currentPageData.length ,
+                    itemBuilder:(context,index){
+                     return  CustomWidgets.customVisitorCard(
+                         _currentPageData[index]['name'],_currentPageData[index]['email'],_currentPageData[index]['purpose'],
+                         _currentPageData[index]['phone'].toString(),_currentPageData[index]['alternate_phone'].toString(),
+                         _currentPageData[index]['contact_person'],_currentPageData[index]['address'],
+                         _currentPageData[index]['current_date'],(){
+                           Navigator.pushReplacement(context,
+                               MaterialPageRoute(builder: (_)=>EditVisitorPage(
+                                   visitorName: _currentPageData[index]['name'].toString(),
+                                   email:_currentPageData[index]['email'].toString() ,
+                                   phone: _currentPageData[index]['phone'].toString(),
+                                   altPhone:_currentPageData[index]['alternate_phone'].toString() ,
+                                   contactPerson:_currentPageData[index]['contact_person'].toString(),
+                                   address: _currentPageData[index]['address'].toString(),
+                                   id: _currentPageData[index]['id'].toString(), purpose:_currentPageData[index]['purpose'].toString() )));
+                     });
+
+                   }),
+                 ),
+               ),
+             ),
+
+
+           ],
+         ),
        ],
      ),
    );

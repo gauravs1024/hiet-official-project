@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hiet_official_project/Utils/AppColors.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 class CustomWidgets{
 
@@ -16,7 +17,7 @@ class CustomWidgets{
  static  customButton( String btnText,VoidCallback onPressed){
     return  AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      height: 30.0,
+      height: 50.0,
       decoration: BoxDecoration(
         color: AppColors.primaryColor,
         borderRadius: BorderRadius.circular(30),
@@ -64,7 +65,7 @@ class CustomWidgets{
          children: [
            Positioned(
              top: 100,
-             left: 105,
+             left: 115,
              height: 100,
              width: 100,
              child: Opacity(
@@ -81,20 +82,31 @@ class CustomWidgets{
                crossAxisAlignment: CrossAxisAlignment.start,
                mainAxisAlignment: MainAxisAlignment.center,
                children: [
-
-                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        child: Image.asset('assets/images/hiet-logo-clear-background.png',
+                          height: 30,
+                          width: 30,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Text("Visitor\'s details", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                      IconButton(onPressed: onTapEditIcon, icon: Icon(Icons.edit)),
+                    ],
+                  ),
+                ),
+                 Divider(),
+                 Row(
                    children: [
-                     Row(
-                       children: [
-                         Icon(Icons.person, color:AppColors.primaryColor),
-                         SizedBox(width: 8),
-                         Text("Name: $name", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                       ],
-                     ),
-                     IconButton(onPressed: onTapEditIcon, icon: Icon(Icons.edit))
+                     Icon(Icons.person, color:AppColors.primaryColor),
+                     SizedBox(width: 8),
+                     Expanded(child: Text("Name: $name", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),overflow: TextOverflow.ellipsis,maxLines: 2,)),
                    ],
-
                  ),
+
                  Divider(),
                  Row(
                    children: [
@@ -142,7 +154,7 @@ class CustomWidgets{
                    children: [
                      Icon(Icons.location_on, color: AppColors.primaryColor),
                      SizedBox(width: 8),
-                     Text("Address: $address", style: TextStyle(fontSize: 16)),
+                     Expanded(child: Text("Address: $address", style: TextStyle(fontSize: 16),overflow: TextOverflow.ellipsis,maxLines: 2,)),
                    ],
                  ),
                  Divider(),
@@ -194,35 +206,115 @@ class CustomWidgets{
 
 
 
- static showQuickAlert(String message ,String type,BuildContext context){
-   AlertType _type=AlertType.error;
-   if(type=='success'){
-     _type =AlertType.success;
+ // static showQuickAlert(String message ,String type,BuildContext context,)  {
+ //   AlertType _type=AlertType.error;
+ //   if(type=='success'){
+ //     _type =AlertType.success;
+ //
+ //   }
+ //   else if(type=='warning'){
+ //     _type=AlertType.warning;
+ //   }
+ //   else if(type=='error'){
+ //     _type=AlertType.error;
+ //   }
+ //
+ //   Alert(context: context,
+ //       title: message,
+ //       type: _type,
+ //       buttons: [
+ //         DialogButton(child: Text('OKAY',style: TextStyle(color: Colors.white),),
+ //             color: AppColors.primaryColor,
+ //             onPressed: (){
+ //               Navigator.pop(context);
+ //               // Navigator.of(context).pop();
+ //             })
+ //       ]
+ //   ).show();
+ //    Future.delayed(const Duration(seconds: 2), () {
+ //      Navigator.pop(context);// Close the alert after 3 seconds
+ //   });
+ //
+ //
+ // }
 
+
+
+
+
+
+ static showQuickAlert(String message,String type,BuildContext context) {
+   String imageType='';
+   if(type=='success'){
+     imageType ='assets/animations/success.json';
    }
    else if(type=='warning'){
-     _type=AlertType.warning;
-   }
+  imageType='assets/animations/warning.json' ;  }
    else if(type=='error'){
-     _type=AlertType.error;
-   }
+    imageType='assets/animations/error.json'  ; }
 
-   Alert(context: context,
-       title: message,
-       type: _type,
-       buttons: [
-         DialogButton(child: Text('OKAY',style: TextStyle(color: Colors.white),),
-             color: AppColors.primaryColor,
-             onPressed: (){
-               Navigator.of(context).pop();
-             })
-       ]
-   ).show();
-   Future.delayed(const Duration(seconds: 3), () {
-     Navigator.of(context).pop(); // Close the alert after 3 seconds
-   });
+   showDialog(
+     context: context,
+     builder: (BuildContext context) {
+       return Dialog(
+         shape: RoundedRectangleBorder(
+             borderRadius: BorderRadius.circular(15)),
+         backgroundColor: Colors.white,
+         child: Padding(
+           padding: const EdgeInsets.all(20),
+           child: Column(
+             mainAxisSize: MainAxisSize.min,
+             children: [
+               SizedBox(
+                   height:200,
+           child: Lottie.asset(imageType)),
+               // Custom warning image
+               const SizedBox(height: 10),
 
+               Text(
+                 message,
+                 textAlign: TextAlign.center,
+                 style: const TextStyle(fontSize: 16, color: Colors.black87),
+               ),
+               const SizedBox(height: 20),
+               SizedBox(
+                 width: double.infinity,
+                 child: Container(
+                   decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                     borderRadius: BorderRadius.circular(12),
+                   ),
+                   child: ElevatedButton(
+                     style: ElevatedButton.styleFrom(
+                       backgroundColor: Colors.transparent,
+                       shadowColor: Colors.transparent,
+                       shape: RoundedRectangleBorder(borderRadius: BorderRadius
+                           .circular(12)),
+                     ),
+                     onPressed: () {
+                       Navigator.of(context).pop();
+                     },
+                     child: const Text(
+                       "OK",
+                       style: TextStyle(fontSize: 16, color: Colors.white),
+                     ),
+                   ),
+                 ),
+               ),
+             ],
+           ),
+         ),
+       );
+     },
+   );
  }
+
+
+
+
+
+
+
 
  static Widget customTextRow(String field,String text){
    return Column(

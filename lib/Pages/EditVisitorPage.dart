@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hiet_official_project/Pages/ViewQueryFormPage.dart';
@@ -152,6 +150,9 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
     if(nameController.text==''||phoneController.text==''||
     contactPersonController.text==''||purposeController.text==''){
       CustomWidgets.showQuickAlert('Please Fill All The Fields', 'error', context);
+    }
+    else if(phoneController.text.length<10||altPhoneController.text.length<10){
+      CustomWidgets.showQuickAlert('Phone Number must be 10 digits', 'error', context);
     }
     else{
       editVisitor();

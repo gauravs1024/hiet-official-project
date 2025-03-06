@@ -2,13 +2,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hiet_official_project/API/Api.dart';
 import 'package:hiet_official_project/Pages/HomePage.dart';
 import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
-import '../SessionManagement/SessionManagement.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/CustomWidgets.dart';
 
@@ -34,12 +33,14 @@ class _LoginPageState extends State<LoginPage>{
       _isObscured=!_isObscured;
     });
   }
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _isLoading=false;
   }
 
+  @override
   void dispose(){
     nameController.dispose();
     passwordController.dispose();
@@ -80,12 +81,9 @@ Future<void>userLogin() async{
       },
     );
     final response= await Future.any([loginRequest,Future.delayed(timeoutDuration)]);
-    SessionManagement sessionManagement = SessionManagement();
       if (response.statusCode == 200) {
         var responseMsg = json.decode(response.body);
-        print(responseMsg);
         if(responseMsg['status']==true){
-          print(responseMsg['message']);
         await  saveSession(responseMsg['data']['name'],responseMsg['data']['id'].toString(),responseMsg['data']['role'],
               responseMsg['data']['email'],(DateTime.now()).toString());
           clearFields();
@@ -112,15 +110,42 @@ Future<void>userLogin() async{
 }
     void inputTextValidation(){
     if(emailPhoneController.text==''){
-      CustomWidgets.showQuickAlert('Please fill all the fields','error' , context);
+      CustomWidgets.showQuickAlert('Please fill all the fields','error',context );
+
+
     }
     else if(passwordController.text==''){
-      CustomWidgets.showQuickAlert('Please fill all the fields','error' , context);
+      CustomWidgets.showQuickAlert('Please fill all the fields','error',context);
     }
     else{
       userLogin();
     }
     }
+
+
+
+
+
+
+
+  // Widget showDialog(){
+  //   return AlertDialog(
+  //     title: const Text('AlertDialog Title'),
+  //     content: const Text('AlertDialog description'),
+  //     actions: <Widget>[
+  //       TextButton(
+  //         onPressed: () => Navigator.pop(context, 'Cancel'),
+  //         child: const Text('Cancel'),
+  //       ),
+  //       TextButton(
+  //         onPressed: () => Navigator.pop(context, 'OK'),
+  //         child: const Text('OK'),
+  //       ),
+  //     ],
+  //   );
+  //
+  //   }
+
 
 
 
@@ -180,38 +205,13 @@ Future<void>userLogin() async{
             ),
 
             const SizedBox(height: 10,),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 30.0,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    inputTextValidation();
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: const Center(
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Color(0xffffffff),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-             Row(
+
+            CustomWidgets.customButton('Login', inputTextValidation),
+             Row(mainAxisAlignment: MainAxisAlignment.center,
                children: [
                  GestureDetector(
                    onTap: (){},
-                   child: Text("Forgot Password?",
+                   child: const Text("Forgot Password?",
                        style: TextStyle(color:Color.fromRGBO(1, 10, 174, 1.0), fontWeight: FontWeight.bold)),
                  ),
                  TextButton(onPressed: (){
@@ -220,7 +220,7 @@ Future<void>userLogin() async{
                    setState(() {
 
                    });
-                 }, child: Text("Signup",
+                 }, child: const Text("Signup",
                      style: TextStyle(color: Color.fromRGBO(1, 10, 174, 1.0), fontWeight: FontWeight.bold))
                  )
                ],
@@ -241,7 +241,7 @@ Future<void>userLogin() async{
           children:<Widget> [
 
             Container(
-              height: 150,
+              height: 120,
               width: 150,
               decoration: const BoxDecoration(
                 // border: Border.all(color: Colors.black,width: 2),
@@ -312,46 +312,25 @@ Future<void>userLogin() async{
 
 
             const SizedBox(height: 10,),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 30.0,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: const Center(
-                    child: Text(
-                      'Signup',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+            CustomWidgets.customButton('SignUp', inputTextValidation),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: TextButton(onPressed: (){
+                isLoginPage=true;
+                clearFields();
+                setState(() {
+
+                });
+              }, child: const Text("Already Registered? Login",
+                  style: TextStyle(color: Color.fromRGBO(1, 10, 174, 1.0), fontWeight: FontWeight.bold))
               ),
             ),
-            TextButton(onPressed: (){
-              isLoginPage=true;
-              clearFields();
-              setState(() {
-
-              });
-            }, child: Text("Already Registered? Login",
-                style: TextStyle(color: Color.fromRGBO(1, 10, 174, 1.0), fontWeight: FontWeight.bold))
-            )
              ],
         ),
       ),
     );
   }
+
 
 
   @override
@@ -376,7 +355,7 @@ Future<void>userLogin() async{
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(height: 30,),
+                      const SizedBox(height: 30,),
                      // Row(
                      //   mainAxisAlignment: MainAxisAlignment.center,
                      //   children: [
