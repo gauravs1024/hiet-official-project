@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hiet_official_project/Pages/HomePage.dart';
-import 'package:hiet_official_project/Pages/LoginPage.dart';
-import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
+import 'Pages/HomePage.dart';
+import 'Pages/LoginPage.dart';
+import 'SharedPreferences/SharedPreferencesSession.dart';
 
 bool loggedInFlag=false;
 Future<void> main() async {
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Login Page',
-      home:loggedInFlag?HomePage():LoginPage(),
+      home:loggedInFlag?const HomePage():const LoginPage(),
     );
   }
 }

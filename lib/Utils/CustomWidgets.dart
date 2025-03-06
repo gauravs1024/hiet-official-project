@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hiet_official_project/Utils/AppColors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'AppColors.dart';
 class CustomWidgets{
 
  static customAppBAr(String title,){
@@ -64,8 +64,8 @@ class CustomWidgets{
        child: Stack(
          children: [
            Positioned(
-             top: 100,
-             left: 115,
+             top: 115,
+             left: 130,
              height: 100,
              width: 100,
              child: Opacity(
@@ -86,15 +86,28 @@ class CustomWidgets{
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        child: Image.asset('assets/images/hiet-logo-clear-background.png',
-                          height: 30,
-                          width: 30,
-                          fit: BoxFit.fill,
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Image.asset('assets/images/hiet-logo-clear-background.png',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10),),
+                          border: Border.all(width: 1)
                         ),
                       ),
                       Text("Visitor\'s details", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                      IconButton(onPressed: onTapEditIcon, icon: Icon(Icons.edit)),
+                      Stack(
+                        children: [
+                          Container(height: 50,width: 50,decoration: BoxDecoration(border: Border.all(width: 1),borderRadius: BorderRadius.all(Radius.circular(10)),color: Color(0xff155a69).withOpacity(1)),),
+                          IconButton(onPressed: onTapEditIcon, icon: Icon(Icons.edit),color: Colors.white,),
+                        ],
+                      ),
+
+
                     ],
                   ),
                 ),

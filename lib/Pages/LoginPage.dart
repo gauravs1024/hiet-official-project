@@ -2,14 +2,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hiet_official_project/API/Api.dart';
-import 'package:hiet_official_project/Pages/HomePage.dart';
-import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
+
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
 import 'package:rflutter_alert/rflutter_alert.dart';
+import '../API/Api.dart';
+import '../SharedPreferences/SharedPreferencesSession.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/CustomWidgets.dart';
+import 'HomePage.dart';
 
 class LoginPage extends StatefulWidget{
   const LoginPage({super.key});

@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hiet_official_project/Pages/ViewQueryFormPage.dart';
 import 'package:http/http.dart' as http;
 import '../API/Api.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/CustomWidgets.dart';
+import 'ViewQueryFormPage.dart';
 
 class EditVisitorPage extends StatefulWidget{
  final String visitorName;
@@ -278,34 +278,7 @@ class _EditVisitorPageState extends State<EditVisitorPage> {
                   height: 1,
                 ),
                 const SizedBox(height: 10,),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: 30.0,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(21, 90, 105, 1),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (
-                          ) {
-                        textValidation();
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: const Center(
-                        child: Text(
-                          'Update',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              CustomWidgets.customButton('Update', textValidation)
               ],
             ),
           ),

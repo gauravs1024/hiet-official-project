@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hiet_official_project/Pages/LoginPage.dart';
-import 'package:hiet_official_project/SharedPreferences/SharedPreferencesSession.dart';
+
+import '../SharedPreferences/SharedPreferencesSession.dart';
 import '../Utils/AppColors.dart';
+import 'LoginPage.dart';
 
 class AppDrawerMenuScreen extends StatefulWidget{
   const AppDrawerMenuScreen({super.key});

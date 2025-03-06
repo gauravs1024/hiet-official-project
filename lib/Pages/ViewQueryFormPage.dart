@@ -3,14 +3,16 @@ import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hiet_official_project/API/Api.dart';
-import 'package:hiet_official_project/Pages/EditVisitorPage.dart';
-import 'package:hiet_official_project/Utils/AppColors.dart';
-import 'package:hiet_official_project/Utils/CustomWidgets.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../API/Api.dart';
+import '../Utils/AppColors.dart';
+import '../Utils/CustomWidgets.dart';
+import 'EditVisitorPage.dart';
 class ViewQueryFormPage extends StatefulWidget{
   const ViewQueryFormPage({super.key});
 
